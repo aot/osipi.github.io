@@ -1,13 +1,13 @@
 name: get-literature-zotero
-on: [push]
+on:
+  schedule:
+    - cron:  '0 12 * * 5'
+    
 jobs:
   zotero-literature:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-          fetch-depth: 0
       - name: update 
         run: |
           curl -o _data/phantom_literature.json "https://api.zotero.org/groups/2900833/items/top?key=eTYEyPZvup4cRMnUrMkSPkAS&format=json"
@@ -18,3 +18,5 @@ jobs:
             commit-message: "[BOT] Update phantom literature"
             title: "[BOT] Update phantom literature"
             body: |
+              - This is an automated pull request.
+            branch: update-data
