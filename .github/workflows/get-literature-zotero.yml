@@ -1,7 +1,5 @@
 name: get-literature-zotero
 on: [push]
-env:
-  FILES_CHANGED: false
 jobs:
   zotero-literature:
     runs-on: ubuntu-latest
@@ -13,21 +11,10 @@ jobs:
       - name: update 
         run: |
           curl -o _data/phantom_literature.json "https://api.zotero.org/groups/2900833/items/top?key=eTYEyPZvup4cRMnUrMkSPkAS&format=json"
-      - name: Check for changes (fail if none)
-        run: |
-          git diff --quiet _data/phantom_literature.json
-          echo "FILES_CHANGED=$?" >> $GITHUB_ENV
-          exit 0
-      - name: Commit files
-        if: env.FILES_CHANGED == 1
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add .
-          git commit -m "updated zotero literature" -a
-      - name: Push changes
-        if: env.FILES_CHANGED == 1
-        uses: ad-m/github-push-action@master
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+            token: ${{ secrets.GITHUB_TOKEN }}
+            commit-message: "[BOT] Update phantom literature"
+            title: "[BOT] Update phantom literature"
+            body: |
